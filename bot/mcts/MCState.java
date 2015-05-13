@@ -117,6 +117,27 @@ public class MCState {
         return placeArmiesMoves;
     }
 
+    public ArrayList<PlaceArmiesMove> getPlaceArmiesFrontLine() {
+        ArrayList<PlaceArmiesMove> placeArmiesMoves = new ArrayList<PlaceArmiesMove>();
+        String myName = state.getMyPlayerName();
+        int armies = state.getStartingArmies();
+        LinkedList<Region> regions = state.getVisibleMap().getRegions();
+
+        for (Region region : regions) {
+            if(region.ownedByPlayer((myName))) {
+                LinkedList<Region> neighbours = region.getNeighbors();
+                for (Region neigh : neighbours) {
+                    if (!neigh.ownedByPlayer(myName)) {
+                        placeArmiesMoves.add(new PlaceArmiesMove(myName, region, armies));
+                        return placeArmiesMoves;
+                    }
+                }
+            }
+        }
+
+        return getPlaceArmies();
+    }
+
     /* Same logic as starter bot
     *  Todo: develop more tactics */
     public ArrayList<AttackTransferMove> getAttackTransfer() {

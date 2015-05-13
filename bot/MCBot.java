@@ -49,7 +49,8 @@ public class MCBot implements Bot
         Mcst mcst = new Mcst(100);
         nextState = mcst.search(new MCState(state));
 
-        return nextState.getPlaceArmies();
+        return nextState.getPlaceArmiesFrontLine();
+        //return nextState.getPlaceArmies();
     }
 
     @Override
