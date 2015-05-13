@@ -28,7 +28,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MCBot implements Bot
+public class NaiveMCBot implements Bot
 {
     private MCState nextState = null;
 
@@ -60,7 +60,7 @@ public class MCBot implements Bot
 
     public static void main(String[] args)
     {
-        BotParser parser = new BotParser(new MCBot());
+        BotParser parser = new BotParser(new NaiveMCBot());
         parser.run();
     }
 

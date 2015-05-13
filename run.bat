@@ -1,5 +1,5 @@
 cd classes
-java main.RunGame 0 0 0 "java bot.MCBot" "java bot.MinimaxBot"
+java main.RunGame 0 0 0 "java bot.MCBot" "java bot.NaiveMCBot"
 pause
 
 :: Bots:
