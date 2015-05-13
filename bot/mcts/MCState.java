@@ -175,4 +175,59 @@ public class MCState {
         }
         return attackTransferMoves;
     }
+
+    public ArrayList<AttackTransferMove> getAttackTransferFrontLine() {
+        ArrayList<AttackTransferMove> attackTransferMoves = new ArrayList<AttackTransferMove>();
+        String myName = state.getMyPlayerName();
+
+        LinkedList<Region> regions = state.getVisibleMap().getRegions();
+        LinkedList<Region> frontLine = new LinkedList<Region>();
+        // Collect front line
+        for (Region region : regions) {
+            if (region.ownedByPlayer((myName))) {
+                LinkedList<Region> neighbours = region.getNeighbors();
+                for (Region neigh : neighbours) {
+                    if (!neigh.ownedByPlayer(myName)) {
+                        frontLine.add(region);
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Attack neighbours
+        for (Region region : frontLine) {
+            LinkedList<Region> neighbours = region.getNeighbors();
+            int armiesLeft = region.getArmies();
+            for (int i = 0; i < neighbours.size(); i++) {
+                int amount = getArmiesToSpend(region, neighbours.get(i));
+                if (amount == 0)
+                    continue;
+                else if (armiesLeft < 2)
+                    break;
+                else if (i == neighbours.size() - 1) {
+                    if(amount > 1)
+                        attackTransferMoves.add(new AttackTransferMove(myName, region, neighbours.get(i), armiesLeft - 1));
+                }
+                else {
+                    attackTransferMoves.add(new AttackTransferMove(myName, region, neighbours.get(i), amount));
+                    armiesLeft -= amount;
+                }
+            }
+        }
+
+        return attackTransferMoves;
+    }
+
+    /* @return #armies to attack with
+    * returns 0 if region has no armies to spare or attack success is uncertain */
+    private int getArmiesToSpend(Region from, Region to) {
+        int has = from.getArmies();
+        int needed = to.getArmies() * 2;
+
+        if (has > needed)
+            return needed;
+
+        return 0;
+    }
 }

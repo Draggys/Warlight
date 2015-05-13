@@ -56,7 +56,8 @@ public class MCBot implements Bot
     @Override
     public ArrayList<AttackTransferMove> getAttackTransferMoves(BotState state, Long timeOut)
     {
-        return nextState.getAttackTransfer();
+        return nextState.getAttackTransferFrontLine();
+        //return nextState.getAttackTransfer();
     }
 
     public static void main(String[] args)
