@@ -7,6 +7,7 @@ import move.AttackTransferMove;
 import move.PlaceArmiesMove;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 
 /**
@@ -123,13 +124,36 @@ public class MCState {
         int armies = state.getStartingArmies();
         LinkedList<Region> regions = state.getVisibleMap().getRegions();
 
+        int x = 2;
+        int placeArmies = armies - x;
+        boolean rest = false;
+
         for (Region region : regions) {
             if(region.ownedByPlayer((myName))) {
                 LinkedList<Region> neighbours = region.getNeighbors();
                 for (Region neigh : neighbours) {
                     if (!neigh.ownedByPlayer(myName)) {
-                        placeArmiesMoves.add(new PlaceArmiesMove(myName, region, armies));
-                        return placeArmiesMoves;
+                        placeArmiesMoves.add(new PlaceArmiesMove(myName, region, placeArmies));
+                        rest = true;
+                    }
+                    if(rest)
+                        break;
+                }
+            }
+            if(rest)
+                break;
+        }
+
+        Collections.reverse(regions);
+        if(rest) {
+            for (Region region : regions) {
+                if(region.ownedByPlayer(myName)) {
+                    LinkedList<Region> neighbours = region.getNeighbors();
+                    for(Region neigh : neighbours) {
+                        if(!neigh.ownedByPlayer(myName)) {
+                            placeArmiesMoves.add(new PlaceArmiesMove(myName, region, x));
+                            return placeArmiesMoves;
+                        }
                     }
                 }
             }
@@ -199,19 +223,39 @@ public class MCState {
         for (Region region : frontLine) {
             LinkedList<Region> neighbours = region.getNeighbors();
             int armiesLeft = region.getArmies();
+            int lastEnemy = -1;
             for (int i = 0; i < neighbours.size(); i++) {
+                if(neighbours.get(i).ownedByPlayer(myName))
+                    continue;
                 int amount = getArmiesToSpend(region, neighbours.get(i));
                 if (amount == 0)
                     continue;
-                else if (armiesLeft < 2)
+                else if (armiesLeft < 3)
                     break;
                 else if (i == neighbours.size() - 1) {
-                    if(amount > 1)
+                    if(armiesLeft > 2)
                         attackTransferMoves.add(new AttackTransferMove(myName, region, neighbours.get(i), armiesLeft - 1));
                 }
                 else {
                     attackTransferMoves.add(new AttackTransferMove(myName, region, neighbours.get(i), amount));
                     armiesLeft -= amount;
+                    lastEnemy = attackTransferMoves.size() - 1;
+                }
+            }
+            if(lastEnemy != -1 && armiesLeft > 1) {
+                Region toAtk = attackTransferMoves.get(lastEnemy).getToRegion();
+                int amount = attackTransferMoves.get(lastEnemy).getArmies();
+                attackTransferMoves.set(lastEnemy, new AttackTransferMove(myName, region, toAtk, amount + armiesLeft - 1));
+            }
+        }
+
+        // Move armies not on frontline
+        for (Region region : regions) {
+            if(region.getArmies() < 2)
+                continue;
+            if(region.ownedByPlayer(myName)) {
+                if(!frontLine.contains(region)) {
+                    attackTransferMoves.add(new AttackTransferMove(myName, region, region.getNeighbors().get(region.getNeighbors().size()-1), region.getArmies() - 1));
                 }
             }
         }
@@ -223,7 +267,7 @@ public class MCState {
     * returns 0 if region has no armies to spare or attack success is uncertain */
     private int getArmiesToSpend(Region from, Region to) {
         int has = from.getArmies();
-        int needed = to.getArmies() * 2;
+        int needed = to.getArmies() * 2 + 1;
 
         if (has > needed)
             return needed;

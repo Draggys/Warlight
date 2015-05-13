@@ -142,7 +142,7 @@ public class MiniMaxBot implements Bot
 
     public static void main(String[] args)
     {
-        BotParser parser = new BotParser(new BotStarter());
+        BotParser parser = new BotParser(new BotStarterOld());
         parser.run();
     }
 

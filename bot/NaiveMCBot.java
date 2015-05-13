@@ -46,7 +46,7 @@ public class NaiveMCBot implements Bot
 
     @Override
     public ArrayList<PlaceArmiesMove> getPlaceArmiesMoves(BotState state, Long timeOut) {
-        Mcst mcst = new Mcst(100);
+        Mcst mcst = new Mcst(1000);
         nextState = mcst.search(new MCState(state));
 
         return nextState.getPlaceArmies();
