@@ -1,3 +1,10 @@
 To run in Intellij
 ALT+SHIFT+F10, Right, E, Enter, Tab, enter your command line parameters, i.e
 0 0 0 "java bot.MiniMaxBot" "java bot.BotStarterOld"
+
+
+I'm using a Minimax Algorithm with Alpha-Beta Pruning. I've also added in Risk Assessment (Not to be confused with the game Risk) that will allow the AI to take more risky moves, should it notice that their opponent(s) do not always make the best move.
+
+I'm also expanding the nodes as I need them. Technically, my entire Tree-Structure is in a Priority Queue, where the Nodes are ordered by Favoribility, which is measured by my Heuristic Function. This heavily cuts down on memory and computation time.
+
+If I manage to find some free time, I'll see what I can do to convert my current Algorithm. Given that my Algorithm assumes that all Nodes are Leaf Nodes until expanded, the only change for Fog of War should be trivial.

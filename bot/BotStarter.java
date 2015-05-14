@@ -30,6 +30,7 @@ import java.util.List;
 public class BotStarter implements Bot
 {
     private MCState nextState = null;
+    Mcst mcst = new Mcst(1000);
 
     @Override
     public ArrayList<Region> getPreferredStartingRegions(BotState state, Long timeOut)
@@ -45,7 +46,6 @@ public class BotStarter implements Bot
 
     @Override
     public ArrayList<PlaceArmiesMove> getPlaceArmiesMoves(BotState state, Long timeOut) {
-        Mcst mcst = new Mcst(1);
         nextState = mcst.search(new MCState(state));
 
         return nextState.getPlaceArmiesFrontLine();

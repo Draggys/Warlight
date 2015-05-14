@@ -72,6 +72,7 @@ public class MCState {
     /* Evaluates leaf node
      * @return 0 of draw, 1 if win, -1 if loss */
     public int getResult() {
+        /*
         assert (state.getRoundNumber() != 100);
 
         LinkedList<Region> regions = state.getVisibleMap().getRegions();
@@ -92,6 +93,28 @@ public class MCState {
             return -1;
         else
             throw(new IllegalStateException());
+        */
+
+        int myScore = 0;
+        int enemyScore = 0;
+        String myName = state.getMyPlayerName();
+        LinkedList<Region> regions = state.getVisibleMap().getRegions();
+        for(Region region : regions) {
+            if(region.ownedByPlayer(myName))
+                myScore += region.getArmies();
+            else
+                enemyScore += region.getArmies();
+        }
+
+        int finalScore;
+        if (myScore > enemyScore)
+            finalScore = 1;
+        else if (myScore < enemyScore)
+            finalScore = -1;
+        else
+            finalScore = 0;
+
+        return finalScore;
     }
 
     /* Same logic as starter bot
