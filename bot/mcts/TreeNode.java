@@ -18,19 +18,23 @@ public class TreeNode {
 
     TreeNode[] children;
     double nVisits, totValue;
-    MCState state; //parent
+    public MCState state;
+
+    long startTime;
 
     public TreeNode(MCState state) {
         this.state = state;
     }
 
     public void selectAction() {
+
         LinkedList<TreeNode> visited = new LinkedList<TreeNode>();
         TreeNode cur  = this;
         visited.add(this);
         while (!cur.isLeaf()) {
             cur = cur.select();
             visited.add(cur);
+
         }
         cur.expand();
         TreeNode newNode = cur.select();
@@ -44,82 +48,11 @@ public class TreeNode {
     public void expand() {
         children = new TreeNode[nActions];
         for (int i = 0; i < nActions; i++) {
+          //  ArrayList<MCState> possibleMoves = state.getPossibleStates();
+          //  MCState state = possibleMoves.get(0);
+            for (int j = 0; j < 1000; j++) {}
+
             children[i] = new TreeNode(state);
-
-            // Todo: monte carlo too slow
-            boolean run = state.state.getRoundNumber() > 0;
-            if (run) {
-                MCState state = new MCState(this.state);
-
-                /*
-                LinkedList<Region> regions = state.state.getVisibleMap().getRegions();
-                for(Region r : regions) {
-                    if(r.ownedByPlayer(state.state.getMyPlayerName())) {
-                        r.setArmies(r.getArmies() + state.state.getStartingArmies());
-                        break;
-                    }
-                }
-
-                for(Region r : regions) {
-                    if(r.ownedByPlayer(state.state.getMyPlayerName())) {
-                        if(r.getNeighbors().get(r.getNeighbors().size() - 1).getArmies() < r.getArmies() * 2 + 1) {
-                            r.getNeighbors().get(r.getNeighbors().size()- 1).setArmies(0);
-                            break;
-                        }
-                    }
-                }
-                */
-
-                // new stuff from here on
-                // Todo: update state according to our strategy.
-                ArrayList<PlaceArmiesMove> pam = state.getPlaceArmiesFrontLine();
-                ArrayList<AttackTransferMove> atm = state.getAttackTransferFrontLine();
-                LinkedList<Region> regions = state.state.getVisibleMap().getRegions();
-                Map map = state.state.getVisibleMap();
-
-                // Deploy to region
-                for (PlaceArmiesMove a : pam) {
-                    Region aRegion = a.getRegion();
-                    int armies = a.getArmies();
-                    for (int j = 0; j < regions.size(); j++) {
-                        if (aRegion == regions.get(j)) {
-                            map.getRegion(j).setArmies(map.getRegion(j).getArmies() + armies);
-                            break;
-                        }
-                    }
-                }
-
-/*
-                // Attack
-                boolean attacked = false;
-                for (AttackTransferMove a : atm) {
-                    Region fromRegion = a.getFromRegion();
-                    Region toRegion = a.getToRegion();
-                    int armies = a.getArmies();
-                    for (int j = 0; j < regions.size(); j++) {
-                        if (fromRegion == regions.get(j)) {
-                            LinkedList<Region> neighbours = fromRegion.getNeighbors();
-                            for (int k = 0; k < neighbours.size(); k++) {
-                                if (neighbours.get(k) == toRegion) {
-                                    int fromCurr = state.state.getVisibleMap().getRegion(j).getArmies();
-                                    int toCurr = state.state.getVisibleMap().getRegion(k).getArmies();
-                                    if (toRegion.ownedByPlayer(state.state.getMyPlayerName())) {
-                                        state.state.getVisibleMap().getRegion(k).setArmies(toCurr + armies);
-                                    } else {
-                                        // Assume that the attack was succesful
-                                        state.state.getVisibleMap().getRegion(k).setArmies(0);
-                                    }
-                                    state.state.getVisibleMap().getRegion(j).setArmies(fromCurr - armies);
-                                }
-                            }
-                            break;
-                        }
-                    }
-                }
-*/
-
-            }
-            children[i].state = state;
         }
     }
 

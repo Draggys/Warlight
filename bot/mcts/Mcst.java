@@ -1,5 +1,7 @@
 package bot.mcts;
 
+import bot.BotState;
+
 public class Mcst {
     int itermax;
 
@@ -8,6 +10,9 @@ public class Mcst {
     }
 
     public MCState search(MCState root) {
+     //   return new MCState(new MCState(root));
+
+
         double bestVal = Integer.MIN_VALUE;
         TreeNode bestState = null;
         for (int i = 0; i < itermax; i++) {
@@ -21,5 +26,6 @@ public class Mcst {
         }
 
         return bestState.select().state;
+
     }
 }

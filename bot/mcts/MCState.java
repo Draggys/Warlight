@@ -278,7 +278,11 @@ public class MCState {
                 continue;
             if(region.ownedByPlayer(myName)) {
                 if(!frontLine.contains(region)) {
-                    attackTransferMoves.add(new AttackTransferMove(myName, region, region.getNeighbors().get(region.getNeighbors().size()-1), region.getArmies() - 1));
+                    if(region.getNeighbors().size() == 2) {
+                        attackTransferMoves.add(new AttackTransferMove(myName, region, region.getNeighbors().get(0), region.getArmies() - 1)); //Todo: perhaps remove this
+                    }
+                    else
+                        attackTransferMoves.add(new AttackTransferMove(myName, region, region.getNeighbors().get(region.getNeighbors().size()-1), region.getArmies() - 1));
                 }
             }
         }
@@ -296,5 +300,22 @@ public class MCState {
             return needed;
 
         return 0;
+    }
+
+    /* returns a list with possible states to transist to */
+    public ArrayList<MCState> getPossibleStates() {
+        ArrayList<MCState> possibleStates = new ArrayList<>();
+        MCState newState = new MCState(this.state);
+
+        ArrayList<PlaceArmiesMove> move = newState.getPlaceArmiesFrontLine();
+        for(PlaceArmiesMove m : move) {
+            int armies = m.getArmies();
+            Region region = m.getRegion();
+            String player = m.getPlayerName();
+
+            newState.state.getVisibleMap().getRegion(region.getId()).setArmies(0);
+        }
+
+        return possibleStates;
     }
 }
