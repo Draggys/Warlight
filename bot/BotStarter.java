@@ -17,8 +17,9 @@
 
 package bot;
 
-import bot.mcts.MCState;
-import bot.mcts.Mcst;
+
+import bot.log.Log;
+import bot.monty.MCState;
 import main.Region;
 import move.AttackTransferMove;
 import move.PlaceArmiesMove;
@@ -26,16 +27,18 @@ import move.PlaceArmiesMove;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class BotStarter implements Bot
 {
-    private MCState nextState = null;
+    Log logger = new Log();
 
     @Override
     public ArrayList<Region> getPreferredStartingRegions(BotState state, Long timeOut)
     {
         ArrayList<Region> startRegions = state.getPickableStartingRegions();
         Collections.sort(startRegions, new RegionComparator());
+        Collections.reverse(startRegions);
         List<Region> list = startRegions.subList(0, 6);
         ArrayList<Region> ret = new ArrayList<Region>();
         for(int i = 0; i < list.size(); i++)
@@ -45,18 +48,22 @@ public class BotStarter implements Bot
 
     @Override
     public ArrayList<PlaceArmiesMove> getPlaceArmiesMoves(BotState state, Long timeOut) {
-        Mcst mcst = new Mcst(1);
-        nextState = mcst.search(new MCState(state));
+        MCState monty = new MCState(state);
+        ArrayList<ArrayList<PlaceArmiesMove>> pams = monty.getPlaceArmiesMoves(5);
 
-        return nextState.getPlaceArmiesFrontLine();
-        //return nextState.getPlaceArmies();
+        logger.log("RoundNr: " + state.getRoundNumber());
+
+        Random rand = new Random();
+        int i = rand.nextInt(pams.size());
+        return pams.get(i);
     }
 
     @Override
     public ArrayList<AttackTransferMove> getAttackTransferMoves(BotState state, Long timeOut)
     {
-        return nextState.getAttackTransferFrontLine();
-        //return nextState.getAttackTransfer();
+        MCState monty = new MCState(state);
+        ArrayList<AttackTransferMove> atms = monty.getAttackMoves();
+        return atms;
     }
 
     public static void main(String[] args)

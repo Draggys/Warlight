@@ -117,7 +117,7 @@ public class RunGame
 	private void finish(IORobot bot1, IORobot bot2) throws InterruptedException
 	{
 		bot1.finish();
-		Thread.sleep(200);
+		Thread.sleep(200); //200
 
 		bot2.finish();
 		Thread.sleep(200);

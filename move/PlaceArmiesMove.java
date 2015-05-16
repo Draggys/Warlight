@@ -25,8 +25,8 @@ import main.Region;
 
 public class PlaceArmiesMove extends Move {
 	
-	private Region region;
-	private int armies;
+	public Region region;
+	public int armies;
 	
 	//geen misbruik maken van playerName aub, alleen je eigen botnaam invullen
 	public PlaceArmiesMove(String playerName, Region region, int armies)
